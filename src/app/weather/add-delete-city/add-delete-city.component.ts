@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {CityModel} from '../../model/cityList';
 import {CityListService} from '../../service/city-list.service';
 import {OpenweatherService} from '../../service/openweather.service';
-import {LazyLoadEvent} from 'primeng/api';
 
 @Component({
   selector: 'app-add-delete-city',
@@ -13,60 +12,41 @@ import {LazyLoadEvent} from 'primeng/api';
 export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   citylistSub: Subscription;
-  dataSource: CityModel[];
-  cityListArray: CityModel[];
-  addedCityListArray = [];
-  columns: any[];
-  loading: boolean;
-  totalRecords: number;
+  addedCityListArray: CityModel[];
+  cityListArray: string[];
 
-  constructor(private city: CityListService,
-              private openweather: OpenweatherService) {
+  constructor(private city: CityListService) {
   }
 
   ngOnInit() {
-    this.getCityList();
-    this.columns = [
-      {field: 'city', header: 'Miasto'},
-      {field: 'add', header: 'Dodaj'}];
   }
-    // Getting list of cities into the array
-  getCityList() {
-    this.citylistSub = this.city.getlistOfCities().subscribe(value => {
-      this.dataSource = value;
-      this.totalRecords = this.dataSource.length;
-    });
-    this.addedCityListArray = [];
 
-    this.openweather.getWeatherInfo('Poznan', '9b9da861fa27d666f076014dfb60418f').subscribe(value => {
-      console.log(value);
+  search(event) {
+    const queryy = event.query;
+    this.citylistSub = this.city.getlistOfCities().subscribe(data => {
+      this.cityListArray = this.filterCities(queryy, data);
+    }, error1 => {
+      console.log(error1);
+      this.citylistSub.unsubscribe();
     });
-    this.loading = true;
   }
-    // Function which filterd and slice our database
-  lazyLoad(event: LazyLoadEvent) {
-    this.loading = true;
-    console.log(event);
-    setTimeout(() => {
-      if (this.dataSource) {
-        this.loading = false;
-        this.cityListArray = this.dataSource.slice(event.first, (event.first + event.rows));
-        if (event.globalFilter) {
-          this.cityListArray = this.dataSource.filter(value => value.name === event.globalFilter);
-          console.log(event.globalFilter);
-          console.log(this.cityListArray);
-        }
+
+  filterCities(query, cities: CityModel[]): any[] {
+    const filtered: any[] = [];
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < cities.length; i++) {
+      const city = cities[i];
+      if (city.name.toLowerCase().indexOf(query.toLowerCase()) === 0) {
+        filtered.push(city);
       }
-    }, 1000);
-  }
-    // Filtering list of cities and add to the another array
-  addToFavourites(id: number) {
-    this.addedCityListArray.push(this.dataSource.filter(value => value.id === id));
-    console.log(this.addedCityListArray);
+    }
+    return filtered;
   }
 
   ngOnDestroy() {
-    this.citylistSub.unsubscribe();
+    if (this.citylistSub) {
+      this.citylistSub.unsubscribe();
+    }
   }
 
 }

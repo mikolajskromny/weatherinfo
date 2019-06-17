@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {PickListModule, TabMenuModule} from 'primeng/primeng';
+import {AutoCompleteModule, PickListModule, TabMenuModule} from 'primeng/primeng';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
@@ -15,7 +15,8 @@ import {TableModule} from 'primeng/table';
     TabMenuModule,
     PickListModule,
     VirtualScrollerModule,
-    TableModule
+    TableModule,
+    AutoCompleteModule
   ],
   exports: [
     ButtonModule,
@@ -24,7 +25,8 @@ import {TableModule} from 'primeng/table';
     TabMenuModule,
     PickListModule,
     VirtualScrollerModule,
-    TableModule
+    TableModule,
+    AutoCompleteModule
   ]
 })
 export class PrimengModule {

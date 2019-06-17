@@ -7,6 +7,7 @@ import {WeatherComponent} from './weather/weather.component';
 import {WeatherModule} from './weather/weather.module';
 import {PrimengModule} from './weather/primeng/primeng.module';
 import {CityListService} from './service/city-list.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import {CityListService} from './service/city-list.service';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     WeatherModule,
     PrimengModule
