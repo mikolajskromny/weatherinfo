@@ -1,17 +1,11 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {ShowWeatherComponent} from './show-weather/show-weather.component';
 import {AddDeleteCityComponent} from './add-delete-city/add-delete-city.component';
 import {PrimengModule} from './primeng/primeng.module';
 import {HttpClientModule} from '@angular/common/http';
-import { SettingsComponent } from './settings/settings.component';
-import {RouterModule, Routes} from '@angular/router';
+import {SettingsComponent} from './settings/settings.component';
+import {CommonModule} from '@angular/common';
 
-const routes: Routes = [{
-  path: 'settings',
-  component: SettingsComponent
-}
-
-];
 
 @NgModule({
   declarations: [
@@ -22,7 +16,8 @@ const routes: Routes = [{
   imports: [
     PrimengModule,
     HttpClientModule,
-    RouterModule.forChild(routes)
+    CommonModule
   ]
 })
-export class WeatherModule { }
+export class WeatherModule {
+}

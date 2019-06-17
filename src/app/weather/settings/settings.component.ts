@@ -16,9 +16,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+      // Getting api key from Local Storage
     this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => this.apiKey = value);
   }
-
+    // Saving api key from user
   saveApiKey() {
     this.apiKeyService.setApiKey(this.apiKey);
   }

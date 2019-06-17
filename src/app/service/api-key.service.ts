@@ -21,7 +21,7 @@ export class ApiKeyService {
   }
 
   private getApiKeyFromLocalStorage() {
-    const localStorageItem = JSON.parse(localStorage.getItem('apikey'));
+    const localStorageItem = localStorage.getItem('apikey');
     return localStorageItem == null ? null : localStorageItem;
   }
 

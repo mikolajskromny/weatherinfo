@@ -1,22 +1,31 @@
-import { NgModule } from '@angular/core';
-import {AccordionModule} from 'primeng/primeng';
+import {NgModule} from '@angular/core';
+import {PickListModule, TabMenuModule} from 'primeng/primeng';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
+import {VirtualScrollerModule} from 'primeng/virtualscroller';
+import {TableModule} from 'primeng/table';
 
 @NgModule({
   declarations: [],
   imports: [
-    AccordionModule,
     ButtonModule,
     InputTextModule,
-    FormsModule
+    FormsModule,
+    TabMenuModule,
+    PickListModule,
+    VirtualScrollerModule,
+    TableModule
   ],
   exports: [
-    AccordionModule,
     ButtonModule,
     InputTextModule,
-    FormsModule
+    FormsModule,
+    TabMenuModule,
+    PickListModule,
+    VirtualScrollerModule,
+    TableModule
   ]
 })
-export class PrimengModule { }
+export class PrimengModule {
+}
