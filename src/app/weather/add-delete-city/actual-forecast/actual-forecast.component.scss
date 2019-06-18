@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+div.widget {
+  position: relative;
+  width: 355px;
+  margin: 150px auto;
+  background-color: rgba(253, 204, 202, 0.29);
+  border-radius: 9px;
+  padding: 25px;
+  padding-right: 30px;
+}
+
+div.left-panel {
+
+}
+
+div.date {
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+div.city {
+  font-size: 21px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-top: 5px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+div.temp {
+  font-size: 81px;
+  color: rgba(0, 0, 0, 0.9);
+  font-weight: 100;
+}
