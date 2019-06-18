@@ -1,4 +1,5 @@
 <label>
   <input type="text" pInputText [(ngModel)]="apiKey"/>
 </label>
-<p-button label="Click" (click)="saveApiKey()" ></p-button>
+<button pButton type="button" label="Zapisz" (click)="saveApiKey()" class="ui-button-success" style="margin-right: 10px"></button>
+<button pButton type="button" label="Usuń klucz" (click)="removeApiKey()" class="ui-button-danger"></button>

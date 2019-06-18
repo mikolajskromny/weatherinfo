@@ -6,10 +6,9 @@ import {MenuItem} from 'primeng/api';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'weatherinfo';
   items: MenuItem[];
-  activeItem: MenuItem;
 
   ngOnInit() {
     this.menuItems();
@@ -17,10 +16,9 @@ export class AppComponent implements OnInit{
 
   menuItems() {
     this.items = [
-      {label: 'Strona Główna', icon: 'pi pi-home', routerLink: '/' },
-      {label: 'Ustawienia', icon: 'pi pi-user', routerLink: '/settings' },
-      {label: 'Lista miast', icon: 'pi pi-list', routerLink: '/list' }
+      {label: 'Strona Główna', icon: 'pi pi-home', routerLink: '/home'},
+      {label: 'Ustawienia', icon: 'pi pi-user', routerLink: '/settings'},
+      {label: 'Lista miast', icon: 'pi pi-list', routerLink: '/list'}
     ];
-    this.activeItem = this.items[0];
   }
 }

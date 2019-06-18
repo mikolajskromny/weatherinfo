@@ -24,6 +24,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.apiKeyService.setApiKey(this.apiKey);
   }
 
+  removeApiKey() {
+    this.apiKeyService.removeApiKey();
+  }
+
   ngOnDestroy() {
     this.getApiKeySub.unsubscribe();
   }

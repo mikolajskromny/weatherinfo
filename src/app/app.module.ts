@@ -8,6 +8,9 @@ import {WeatherModule} from './weather/weather.module';
 import {PrimengModule} from './weather/primeng/primeng.module';
 import {CityListService} from './service/city-list.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MessageService} from 'primeng/api';
+import {ApiKeyService} from './service/api-key.service';
+import {OpenweatherService} from './service/openweather.service';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,12 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     WeatherModule,
     PrimengModule
   ],
-  providers: [CityListService],
+  providers: [
+    CityListService,
+    MessageService,
+    ApiKeyService,
+    OpenweatherService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

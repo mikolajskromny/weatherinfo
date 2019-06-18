@@ -8,8 +8,8 @@ export class OpenweatherService {
 
   constructor(private http: HttpClient) { }
 
-  getWeatherInfo(city: string, apiKey: string) {
-    return this.http.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${apiKey}`);
+  getWeatherInfo(cityId: number[], apiKey: string) {
+    return this.http.get(`http://api.openweathermap.org/data/2.5/group?id=${cityId}&units=metric&APPID=${apiKey}`);
   }
 
 }

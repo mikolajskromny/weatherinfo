@@ -1,4 +1,7 @@
+<p-toast></p-toast>
 <span>
 <p-autoComplete (completeMethod)="search($event)" [(ngModel)]="addedCityListArray" [delay]="500" [multiple]="true"
                 [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2" placeholder="Szukaj miasta"></p-autoComplete>
+  <button pButton type="button" [label]="showWeatherButtonLabel" icon="pi pi-cloud" (click)="showActualWeatherForecast()"></button>
 </span>
+<app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"></app-actual-forecast>
