@@ -16,9 +16,12 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   cityListArray: string[];
   showActualWeather = false;
   showWeatherButtonLabel: string;
+  favouriteCityList: CityModel;
+  removeId: number;
 
   constructor(private city: CityListService,
               private messageService: MessageService) {
+    this.addedCityListArray = [];
   }
 
   ngOnInit() {
@@ -35,7 +38,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     this.citylistSub = this.city.getlistOfCities().subscribe(data => {
       this.cityListArray = this.filterCities(queryy, data);
     });
-    console.log(this.addedCityListArray);
+    console.log(this.favouriteCityList);
 
   }
 
@@ -65,12 +68,40 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     }
   }
 
+  addCity() {
+    this.addedCityListArray.push(this.favouriteCityList);
+    this.favouriteCityList = null;
+  }
+
+  removeCity() {
+    if (this.showActualWeather) {
+      this.showActualWeather = false;
+      this.showWeatherButtonLabel = 'Zaktualizuj pogodę';
+    }
+    this.addedCityListArray.splice(this.removeId, 1);
+  }
+
   emptyArrayInfo() {
     this.messageService.add({
       severity: 'warn',
       summary: 'Nie zostały wybrane żadne miasta.',
       detail: 'Zacznij wpisywać swoje miasto i kliknij na nie.'
     });
+  }
+
+  showConfirm(id: number) {
+    this.removeId = id;
+    this.messageService.clear();
+    this.messageService.add({key: 'confirm', sticky: true, severity: 'warn', summary: 'Na pewno chcesz usunąć to miasto?'});
+  }
+
+  onConfirm() {
+    this.messageService.clear('confirm');
+    this.removeCity();
+  }
+
+  onReject() {
+    this.messageService.clear('confirm');
   }
 
   ngOnDestroy() {

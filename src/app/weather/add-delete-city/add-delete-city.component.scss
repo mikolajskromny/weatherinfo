@@ -1,0 +1,29 @@
+.container {
+  width: 600px;
+}
+
+.button {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.city-list {
+  margin-top: 5px;
+}
+
+.city-name {
+  border-top-left-radius: 9px;
+  border-bottom-left-radius: 9px;
+  text-align: center;
+  padding: initial;
+  font-family: sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: antiquewhite;
+}
+
+.city-button {
+  border-top-right-radius: 9px;
+  border-bottom-right-radius: 9px;
+  background-color: antiquewhite;
+}

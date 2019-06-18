@@ -1,7 +1,42 @@
-<p-toast></p-toast>
+<div class="ui-g">
+  <p-toast position="center" key="confirm" (onClose)="onReject()" [modal]="true" [baseZIndex]="5000">
+    <ng-template let-message pTemplate="message">
+      <div style="text-align: center">
+        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+        <h3>{{message.summary}}</h3>
+        <p>{{message.detail}}</p>
+      </div>
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-6">
+          <button type="button" pButton (click)="onConfirm()" label="TAK" class="ui-button-success"></button>
+        </div>
+        <div class="ui-g-6">
+          <button type="button" pButton (click)="onReject()" label="NIE" class="ui-button-secondary"></button>
+        </div>
+      </div>
+    </ng-template>
+  </p-toast>
+  <div class="ui-g-1 container">
 <span>
-<p-autoComplete (completeMethod)="search($event)" [(ngModel)]="addedCityListArray" [delay]="500" [multiple]="true"
-                [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2" placeholder="Szukaj miasta"></p-autoComplete>
-  <button pButton type="button" [label]="showWeatherButtonLabel" icon="pi pi-cloud" (click)="showActualWeatherForecast()"></button>
+<p-autoComplete (completeMethod)="search($event)" [(ngModel)]="favouriteCityList" [delay]="500"
+                [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2"
+                placeholder="Szukaj miasta" (keydown.enter)="addCity()"></p-autoComplete>
+  <button pButton type="button" label="Dodaj" icon="pi pi-plus" (click)="addCity()"
+          class="ui-button-success button"></button>
+  <button pButton type="button" [label]="showWeatherButtonLabel" icon="pi pi-cloud"
+          (click)="showActualWeatherForecast()" class="button"></button>
 </span>
-<app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"></app-actual-forecast>
+    <div class="ui-g city-list" *ngFor="let city of addedCityListArray">
+      <div class="ui-g-2 city-name">
+        <p>{{city.name}}</p>
+      </div>
+      <div class="ui-g-2 city-button">
+        <button pButton type="button" label="Usuń" icon="pi pi-minus" class="ui-button-danger"
+                (click)="showConfirm(addedCityListArray.indexOf(city))"></button>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g">
+    <app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"></app-actual-forecast>
+  </div>
+</div>
