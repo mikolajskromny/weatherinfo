@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {CityModel} from '../../model/cityList';
 import {CityListService} from '../../service/city-list.service';
 import {MessageService} from 'primeng/api';
+import {ApiKeyService} from '../../service/api-key.service';
 
 @Component({
   selector: 'app-add-delete-city',
@@ -16,13 +17,33 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   cityListArray: string[];
   showActualWeather = false;
   showWeatherButtonLabel: string;
+  favouriteCityList: CityModel;
+  removeId: number;
+  removeIdFromLocalStorage: number;
+  private getApiKeySub: Subscription;
+  disabledButtonShowWeather = true;
+  hideButtonRemove = false;
 
-  constructor(private city: CityListService,
-              private messageService: MessageService) {
+  constructor(private cityService: CityListService,
+              private messageService: MessageService,
+              private apiKeyService: ApiKeyService) {
   }
 
   ngOnInit() {
     this.showWeatherButtonLabel = 'Pokaż aktualną pogodę';
+
+    // Checking if api key is valid and disabling button if not
+    this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => {
+      if (value) {
+        this.disabledButtonShowWeather = false;
+      }
+    });
+    // Getting saved cities in Local Storage
+    this.addedCityListArray = this.cityService.getSavedCities();
+    // Checking if any city is added and hiding button if not
+    if (this.addedCityListArray.length) {
+      this.hideButtonRemove = true;
+    }
   }
 
   // Function which pass event to the filtering function
@@ -32,11 +53,9 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
       this.showWeatherButtonLabel = 'Zaktualizuj pogodę';
     }
     const queryy = event.query;
-    this.citylistSub = this.city.getlistOfCities().subscribe(data => {
+    this.citylistSub = this.cityService.getlistOfCities().subscribe(data => {
       this.cityListArray = this.filterCities(queryy, data);
     });
-    console.log(this.addedCityListArray);
-
   }
 
   // Filtering function
@@ -52,6 +71,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     return filtered;
   }
 
+  // Setting label of button to display forecast
   showActualWeatherForecast() {
     if (this.addedCityListArray) {
       this.showActualWeather = !this.showActualWeather;
@@ -61,22 +81,80 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
         this.showWeatherButtonLabel = 'Zamknij pogodę';
       }
     } else {
-      this.emptyArrayInfo();
+      this.toast(
+        'warn',
+        'Nie zostały wybrane żadne miasta.',
+        'Zacznij wpisywać swoje miasto i kliknij na nie.'
+      );
+    }
+  }
+  // Adding city to the list and local storage
+  addCity() {
+    if (this.favouriteCityList.name) {
+      this.cityService.addCity(this.favouriteCityList);
+      this.addedCityListArray.push(this.favouriteCityList);
+      this.hideButtonRemove = true;
+      this.favouriteCityList = null;
+    } else {
+      this.toast(
+        'warn',
+        'Błąd dodawania miasta'
+      );
+    }
+  }
+  // Removing city from the list and local storage
+  removeCity() {
+    if (this.showActualWeather) {
+      this.showActualWeather = false;
+      this.showWeatherButtonLabel = 'Zaktualizuj pogodę';
+    }
+    this.addedCityListArray.splice(this.removeId, 1);
+    this.cityService.removeCity(this.removeIdFromLocalStorage);
+  }
+  // Universal function for toast messages
+  toast(severity: string, summary: string, detail?: string) {
+    this.messageService.add({
+      key: 'basic',
+      severity,
+      summary,
+      detail
+    });
+  }
+  // Removing all cities from the list and local storage
+  removeAllCities() {
+    this.cityService.removeAllCities();
+    this.addedCityListArray = [];
+  }
+  // Universal function for toast confirm message
+  showConfirm(summary: string, id?: number, cityId?: number) {
+    this.removeId = id;
+    this.removeIdFromLocalStorage = cityId;
+    this.messageService.clear();
+    this.messageService.add({key: 'confirm', sticky: true, severity: 'warn', summary});
+
+  }
+  // Removing one city or whole cities
+  onConfirm(type: string) {
+    this.messageService.clear('confirm');
+    if (type === 'city') {
+      this.removeCity();
+      if (!this.addedCityListArray.length) {
+        this.hideButtonRemove = false;
+      }
+    } else {
+      this.removeAllCities();
+      this.hideButtonRemove = false;
     }
   }
 
-  emptyArrayInfo() {
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Nie zostały wybrane żadne miasta.',
-      detail: 'Zacznij wpisywać swoje miasto i kliknij na nie.'
-    });
+  onReject() {
+    this.messageService.clear('confirm');
   }
 
   ngOnDestroy() {
+    this.getApiKeySub.unsubscribe();
     if (this.citylistSub) {
       this.citylistSub.unsubscribe();
     }
   }
-
 }
