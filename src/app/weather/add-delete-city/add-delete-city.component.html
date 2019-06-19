@@ -1,4 +1,6 @@
 <div class="ui-g">
+  <p-toast key="basic"></p-toast>
+  <!--      Confirm dialog configuration-->
   <p-toast position="center" key="confirm" (onClose)="onReject()" [modal]="true" [baseZIndex]="5000">
     <ng-template let-message pTemplate="message">
       <div style="text-align: center">
@@ -8,7 +10,10 @@
       </div>
       <div class="ui-g ui-fluid">
         <div class="ui-g-6">
-          <button type="button" pButton (click)="onConfirm()" label="TAK" class="ui-button-success"></button>
+          <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć te miasta?'"
+                  (click)="onConfirm('cities')" label="TAK" class="ui-button-success"></button>
+          <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć to miasto?'"
+                  (click)="onConfirm('city')" label="TAK" class="ui-button-success"></button>
         </div>
         <div class="ui-g-6">
           <button type="button" pButton (click)="onReject()" label="NIE" class="ui-button-secondary"></button>
@@ -16,6 +21,7 @@
       </div>
     </ng-template>
   </p-toast>
+
   <div class="ui-g-1 container">
 <span>
 <p-autoComplete (completeMethod)="search($event)" [(ngModel)]="favouriteCityList" [delay]="500"
@@ -24,15 +30,19 @@
   <button pButton type="button" label="Dodaj" icon="pi pi-plus" (click)="addCity()"
           class="ui-button-success button"></button>
   <button pButton type="button" [label]="showWeatherButtonLabel" icon="pi pi-cloud"
-          (click)="showActualWeatherForecast()" class="button"></button>
+          (click)="showActualWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
 </span>
+    <div class="delete-button" *ngIf="hideButtonRemove">
+      <button pButton type="button" label="Usuń wszystkie miasta" icon="pi pi-minus" class="ui-button-danger"
+              (click)="showConfirm('Na pewno chcesz usunąć te miasta?')"></button>
+    </div>
     <div class="ui-g city-list" *ngFor="let city of addedCityListArray">
       <div class="ui-g-2 city-name">
         <p>{{city.name}}</p>
       </div>
       <div class="ui-g-2 city-button">
         <button pButton type="button" label="Usuń" icon="pi pi-minus" class="ui-button-danger"
-                (click)="showConfirm(addedCityListArray.indexOf(city))"></button>
+                (click)="showConfirm('Na pewno chcesz usunąć to miasto?', addedCityListArray.indexOf(city), city.id)"></button>
       </div>
     </div>
   </div>

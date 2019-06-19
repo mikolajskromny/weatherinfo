@@ -24,6 +24,7 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
   cityId = [];
   getApiKeySub: Subscription;
 
+      // Function round values to 0.5
   static roundTemp(value) {
     return Math.round(value * 2) / 2;
   }
@@ -35,7 +36,7 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
     this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => this.apiKey = value);
     this.getWeatherInfo();
   }
-
+      // Getting weather from service through http and displaying possible warnings
   getWeatherInfo() {
     this.openWeatherService.getWeatherInfo(this.cityId, this.apiKey).subscribe(value => {
       console.log(value);
@@ -44,12 +45,28 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
       });
       this.weatherInfo = value.list;
     }, error1 => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Brak danych na temat jednego z miast',
-        detail: 'Sprawdź czy zapisane miasta znajdują się na liście',
-        life: 3000
-      });
+      console.log(error1);
+      if (error1.statusText === 'Unauthorized') {
+        this.toast(
+          'error',
+          'Niepoprawny klucz API',
+          'W zakładce ustawienia wprowadź poprawny klucz');
+      } else {
+        this.toast(
+          'warn',
+          'Brak danych na temat jednego z miast',
+          'Sprawdź czy zapisane miasta znajdują się na liście');
+      }
+    });
+  }
+      // Universal function for toasts messages
+  toast(severity: string, summary: string, detail?: string) {
+    this.messageService.add({
+      key: 'basic',
+      severity,
+      summary,
+      detail,
+      life: 3000
     });
   }
 
