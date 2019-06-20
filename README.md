@@ -7,4 +7,4 @@ How to run app in docker container?
 6) Open http://localhost:8080
 7) Great! Now you can check my app!
 8) To stop it, paste: "docker ps -a". You will see list of your containers, find "weatherinfo" and look for its NAME
-9) Then paste: "docker stop <NAME>" 
+9) Then paste: "docker stop NAME" 
