@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+.widget {
+  position: relative;
+  width: fit-content;
+  background-image: radial-gradient(rgba(11, 16, 23, 0.35), rgba(28, 65, 87, 0.71));
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 9px;
+  padding: 15px;
+  box-sizing: content-box;
+  margin-bottom: 10px;
+}
+
+.city {
+  font-size: 18px;
+  padding-top: 5px;
+  color: rgb(255, 255, 255);
+  font-family: Muli, sans-serif;
+  display: initial;
+}
+
+.city-name {
+  text-align: center;
+  padding: initial;
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+.image {
+}
+
+.temp {
+  font-size: 15px;
+  color: rgb(255, 255, 255);
+  font-weight: 100;
+  font-family: Muli, sans-serif;
+  margin-right: 10px;
+}
+
+.date {
+  font-size: 12px;
+  font-family: Muli, sans-serif;
+  font-style: italic;
+}

@@ -1,37 +1,38 @@
-<div class="ui-g">
-  <p-toast key="basic"></p-toast>
-  <!--      Confirm dialog configuration-->
-  <p-toast position="center" key="confirm" (onClose)="onReject()" [modal]="true" [baseZIndex]="5000">
-    <ng-template let-message pTemplate="message">
-      <div style="text-align: center">
-        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
-        <h3>{{message.summary}}</h3>
-        <p>{{message.detail}}</p>
+<p-toast key="basic"></p-toast>
+<!--      Confirm dialog configuration-->
+<p-toast position="center" key="confirm" (onClose)="onReject()" [modal]="true" [baseZIndex]="5000">
+  <ng-template let-message pTemplate="message">
+    <div style="text-align: center">
+      <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+      <h3>{{message.summary}}</h3>
+      <p>{{message.detail}}</p>
+    </div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-6">
+        <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć te miasta?'"
+                (click)="onConfirm('cities')" label="TAK" class="ui-button-success"></button>
+        <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć to miasto?'"
+                (click)="onConfirm('city')" label="TAK" class="ui-button-success"></button>
       </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-6">
-          <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć te miasta?'"
-                  (click)="onConfirm('cities')" label="TAK" class="ui-button-success"></button>
-          <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć to miasto?'"
-                  (click)="onConfirm('city')" label="TAK" class="ui-button-success"></button>
-        </div>
-        <div class="ui-g-6">
-          <button type="button" pButton (click)="onReject()" label="NIE" class="ui-button-secondary"></button>
-        </div>
+      <div class="ui-g-6">
+        <button type="button" pButton (click)="onReject()" label="NIE" class="ui-button-secondary"></button>
       </div>
-    </ng-template>
-  </p-toast>
+    </div>
+  </ng-template>
+</p-toast>
 
-  <div class="ui-g-1 container">
-<span>
-<p-autoComplete (completeMethod)="search($event)" [(ngModel)]="favouriteCityList" [delay]="500"
-                [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2"
-                placeholder="Szukaj miasta" (keydown.enter)="addCity()"></p-autoComplete>
-  <button pButton type="button" label="Dodaj" icon="pi pi-plus" (click)="addCity()"
-          class="ui-button-success button"></button>
-  <button pButton type="button" [label]="showWeatherButtonLabel" icon="pi pi-cloud"
-          (click)="showActualWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
-</span>
+
+<div class="ui-g">
+  <div class="container">
+    <p-autoComplete (completeMethod)="search($event)" [(ngModel)]="favouriteCityList" [delay]="500"
+                    [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2"
+                    placeholder="Szukaj miasta" (keydown.enter)="addCity()"></p-autoComplete>
+    <button pButton type="button" label="Dodaj" icon="pi pi-plus" (click)="addCity()"
+            class="ui-button-success button"></button>
+    <button pButton type="button" [label]="showActualWeatherButtonLabel" icon="pi pi-cloud"
+            (click)="showActualWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
+    <button pButton type="button" [label]="showFiveDayWeatherButtonLabel" icon="pi pi-cloud"
+            (click)="showFiveDayWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
     <div class="delete-button" *ngIf="hideButtonRemove">
       <button pButton type="button" label="Usuń wszystkie miasta" icon="pi pi-minus" class="ui-button-danger"
               (click)="showConfirm('Na pewno chcesz usunąć te miasta?')"></button>
@@ -46,7 +47,14 @@
       </div>
     </div>
   </div>
-  <div class="ui-g">
-    <app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"></app-actual-forecast>
+  <div class="ui-g-4 ui-g-nopad">
+    <div class="ui-g-12">
+      <app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"
+                           [apiKey]="apiKey"></app-actual-forecast>
+    </div>
+    <div class="ui-g-12">
+      <app-five-day-forecast *ngIf="showFiveDayWeather" [cityListArray]="addedCityListArray"
+                             [apiKey]="apiKey"></app-five-day-forecast>
+    </div>
   </div>
 </div>

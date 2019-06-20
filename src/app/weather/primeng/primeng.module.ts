@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {AutoCompleteModule, TabMenuModule} from 'primeng/primeng';
+import {AutoCompleteModule, InputSwitchModule, TabMenuModule} from 'primeng/primeng';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
@@ -13,7 +13,8 @@ import {ToastModule} from 'primeng/toast';
     FormsModule,
     TabMenuModule,
     AutoCompleteModule,
-    ToastModule
+    ToastModule,
+    InputSwitchModule
   ],
   exports: [
     ButtonModule,
@@ -21,7 +22,8 @@ import {ToastModule} from 'primeng/toast';
     FormsModule,
     TabMenuModule,
     AutoCompleteModule,
-    ToastModule
+    ToastModule,
+    InputSwitchModule
   ]
 })
 export class PrimengModule {

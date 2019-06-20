@@ -1,9 +1,8 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {CityModel} from '../../../model/cityList';
+import {ICityModel} from '../../../model/cityList';
 import {OpenweatherService} from '../../../service/openweather.service';
-import {ApiKeyService} from '../../../service/api-key.service';
 import {Subscription} from 'rxjs';
-import {OpenWeatherMap} from '../../../model/openWeatherMap';
+import {IActualForecast} from '../../../model/openWeatherMap';
 import {MessageService} from 'primeng/api';
 
 @Component({
@@ -13,18 +12,17 @@ import {MessageService} from 'primeng/api';
 })
 export class ActualForecastComponent implements OnInit, OnDestroy {
 
+  @Input() cityListArray: ICityModel[];
+  @Input() apiKey: string;
+  weatherInfo: IActualForecast[];
+  cityId = [];
+  openWeatherSub: Subscription;
+
   constructor(private openWeatherService: OpenweatherService,
-              private apiKeyService: ApiKeyService,
               private messageService: MessageService) {
   }
 
-  @Input() cityListArray: CityModel[];
-  weatherInfo: OpenWeatherMap[];
-  apiKey: string;
-  cityId = [];
-  getApiKeySub: Subscription;
-
-      // Function round values to 0.5
+  // Function round values to 0.5
   static roundTemp(value) {
     return Math.round(value * 2) / 2;
   }
@@ -33,19 +31,17 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
     this.cityListArray.forEach(value => {
       this.cityId.push(value.id);
     });
-    this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => this.apiKey = value);
     this.getWeatherInfo();
   }
-      // Getting weather from service through http and displaying possible warnings
+
+  // Getting weather from service through http and displaying possible warnings
   getWeatherInfo() {
-    this.openWeatherService.getWeatherInfo(this.cityId, this.apiKey).subscribe(value => {
-      console.log(value);
+    this.openWeatherSub = this.openWeatherService.getActualWeatherInfo(this.cityId, this.apiKey).subscribe(value => {
       value.list.forEach(data => {
         data.main.temp = ActualForecastComponent.roundTemp(data.main.temp);
       });
       this.weatherInfo = value.list;
     }, error1 => {
-      console.log(error1);
       if (error1.statusText === 'Unauthorized') {
         this.toast(
           'error',
@@ -59,7 +55,8 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
       }
     });
   }
-      // Universal function for toasts messages
+
+  // Universal function for toasts messages
   toast(severity: string, summary: string, detail?: string) {
     this.messageService.add({
       key: 'basic',
@@ -71,7 +68,7 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.getApiKeySub.unsubscribe();
+    this.openWeatherSub.unsubscribe();
   }
 
 }

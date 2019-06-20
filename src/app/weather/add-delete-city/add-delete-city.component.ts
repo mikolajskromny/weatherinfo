@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {CityModel} from '../../model/cityList';
+import {ICityModel} from '../../model/cityList';
 import {CityListService} from '../../service/city-list.service';
 import {MessageService} from 'primeng/api';
 import {ApiKeyService} from '../../service/api-key.service';
@@ -13,16 +13,19 @@ import {ApiKeyService} from '../../service/api-key.service';
 export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   citylistSub: Subscription;
-  addedCityListArray: CityModel[];
+  addedCityListArray: ICityModel[];
   cityListArray: string[];
   showActualWeather = false;
-  showWeatherButtonLabel: string;
-  favouriteCityList: CityModel;
+  showFiveDayWeather = false;
+  showActualWeatherButtonLabel: string;
+  showFiveDayWeatherButtonLabel: string;
+  favouriteCityList: ICityModel;
   removeId: number;
   removeIdFromLocalStorage: number;
   private getApiKeySub: Subscription;
   disabledButtonShowWeather = true;
   hideButtonRemove = false;
+  apiKey: string;
 
   constructor(private cityService: CityListService,
               private messageService: MessageService,
@@ -30,10 +33,12 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.showWeatherButtonLabel = 'Pokaż aktualną pogodę';
+    this.showActualWeatherButtonLabel = 'Pokaż aktualną pogodę';
+    this.showFiveDayWeatherButtonLabel = 'Pokaż aktualną prognozę';
 
     // Checking if api key is valid and disabling button if not
     this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => {
+      this.apiKey = value;
       if (value) {
         this.disabledButtonShowWeather = false;
       }
@@ -50,7 +55,11 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   search(event) {
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showWeatherButtonLabel = 'Zaktualizuj pogodę';
+      this.showActualWeatherButtonLabel = 'Zaktualizuj pogodę';
+    }
+    if (this.showFiveDayWeather) {
+      this.showFiveDayWeather = false;
+      this.showFiveDayWeatherButtonLabel = 'Zaktualizuj prognozę';
     }
     const queryy = event.query;
     this.citylistSub = this.cityService.getlistOfCities().subscribe(data => {
@@ -59,7 +68,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   }
 
   // Filtering function
-  filterCities(query, cities: CityModel[]): any[] {
+  filterCities(query, cities: ICityModel[]): any[] {
     const filtered: any[] = [];
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < cities.length; i++) {
@@ -73,12 +82,12 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   // Setting label of button to display forecast
   showActualWeatherForecast() {
-    if (this.addedCityListArray) {
+    if (this.addedCityListArray.length) {
       this.showActualWeather = !this.showActualWeather;
       if (!this.showActualWeather) {
-        this.showWeatherButtonLabel = 'Pokaż aktualną pogodę';
+        this.showActualWeatherButtonLabel = 'Pokaż aktualną pogodę';
       } else {
-        this.showWeatherButtonLabel = 'Zamknij pogodę';
+        this.showActualWeatherButtonLabel = 'Zamknij pogodę';
       }
     } else {
       this.toast(
@@ -88,6 +97,24 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+  showFiveDayWeatherForecast() {
+    if (this.addedCityListArray.length) {
+      this.showFiveDayWeather = !this.showFiveDayWeather;
+      if (!this.showFiveDayWeather) {
+        this.showFiveDayWeatherButtonLabel = 'Pokaż aktualną prognozę';
+      } else {
+        this.showFiveDayWeatherButtonLabel = 'Zamknij prognozę';
+      }
+    } else {
+      this.toast(
+        'warn',
+        'Nie zostały wybrane żadne miasta.',
+        'Zacznij wpisywać swoje miasto i kliknij na nie.'
+      );
+    }
+  }
+
   // Adding city to the list and local storage
   addCity() {
     if (this.favouriteCityList.name) {
@@ -102,15 +129,21 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   // Removing city from the list and local storage
   removeCity() {
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showWeatherButtonLabel = 'Zaktualizuj pogodę';
+      this.showActualWeatherButtonLabel = 'Zaktualizuj pogodę';
+    }
+    if (this.showFiveDayWeather) {
+      this.showFiveDayWeather = false;
+      this.showFiveDayWeatherButtonLabel = 'Zaktualizuj prognozę';
     }
     this.addedCityListArray.splice(this.removeId, 1);
     this.cityService.removeCity(this.removeIdFromLocalStorage);
   }
+
   // Universal function for toast messages
   toast(severity: string, summary: string, detail?: string) {
     this.messageService.add({
@@ -120,11 +153,13 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
       detail
     });
   }
+
   // Removing all cities from the list and local storage
   removeAllCities() {
     this.cityService.removeAllCities();
     this.addedCityListArray = [];
   }
+
   // Universal function for toast confirm message
   showConfirm(summary: string, id?: number, cityId?: number) {
     this.removeId = id;
@@ -133,6 +168,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     this.messageService.add({key: 'confirm', sticky: true, severity: 'warn', summary});
 
   }
+
   // Removing one city or whole cities
   onConfirm(type: string) {
     this.messageService.clear('confirm');

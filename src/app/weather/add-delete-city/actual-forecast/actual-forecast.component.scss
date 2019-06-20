@@ -6,7 +6,7 @@
 
 .widget {
   position: relative;
-  width: 100%;
+  width: fit-content;
   background-image: radial-gradient(rgba(11, 16, 23, 0.35), rgba(28, 65, 87, 0.71));
   background-size: contain;
   background-repeat: no-repeat;
@@ -17,7 +17,7 @@
 }
 
 .city {
-  font-size: 30px;
+  font-size: 20px;
   padding-top: 5px;
   color: rgb(255, 255, 255);
   font-family: Muli, sans-serif;
@@ -35,24 +35,8 @@
 }
 
 .temp {
-  font-size: 80px;
+  font-size: 60px;
   color: rgb(255, 255, 255);
   font-weight: 100;
   font-family: Muli, sans-serif;
-}
-
-
-:host ::ng-deep button {
-  margin-right: .25em;
-}
-
-:host ::ng-deep .custom-toast .ui-toast-message {
-  color: #ffffff;
-  background: #FC466B;
-  background: -webkit-linear-gradient(to right, #3F5EFB, #FC466B);
-  background: linear-gradient(to right, #3F5EFB, #FC466B);
-}
-
-:host ::ng-deep .custom-toast .ui-toast-close-icon {
-  color: #ffffff;
 }

@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {WeatherComponent} from './weather/weather.component';
+import {InfoPageComponent} from './weather/info-page.component';
 import {WeatherModule} from './weather/weather.module';
 import {PrimengModule} from './weather/primeng/primeng.module';
 import {CityListService} from './service/city-list.service';
@@ -15,7 +15,7 @@ import {OpenweatherService} from './service/openweather.service';
 @NgModule({
   declarations: [
     AppComponent,
-    WeatherComponent
+    InfoPageComponent
   ],
   imports: [
     BrowserModule,
