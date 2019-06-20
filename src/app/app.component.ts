@@ -17,8 +17,8 @@ export class AppComponent implements OnInit {
   menuItems() {
     this.items = [
       {label: 'Strona Główna', icon: 'pi pi-home', routerLink: '/home'},
-      {label: 'Ustawienia', icon: 'pi pi-user', routerLink: '/settings'},
-      {label: 'Lista miast', icon: 'pi pi-list', routerLink: '/list'}
+      {label: 'Pogoda', icon: 'pi pi-list', routerLink: '/list'},
+      {label: 'Ustawienia', icon: 'pi pi-user', routerLink: '/settings'}
     ];
   }
 }

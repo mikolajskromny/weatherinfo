@@ -1,6 +1,6 @@
-export interface CityList extends Array<CityModel> { }
+export interface ICityList extends Array<ICityModel> { }
 
-export interface CityModel {
+export interface ICityModel {
   id: number;
   name: string;
   country: string;
@@ -9,3 +9,4 @@ export interface CityModel {
     lat: number;
   };
 }
+

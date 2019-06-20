@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {CityList, CityModel} from '../model/cityList';
+import {ICityList, ICityModel} from '../model/cityList';
 import {HttpClient} from '@angular/common/http';
 
 
@@ -7,26 +7,26 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class CityListService {
-  public savedCityList: CityModel[];
+  public savedCityList: ICityModel[];
 
   constructor(private http: HttpClient) {
     this.savedCityList = this.getSavedCities();
   }
 
   getlistOfCities() {
-    return this.http.get<CityList>('../../assets/city.list.json');
+    return this.http.get<ICityList>('../../assets/city.list.json');
   }
 
   private setLocalStorage(array: any) {
     localStorage.setItem('city', JSON.stringify(array));
   }
 
-  public getSavedCities(): CityModel[] {
+  public getSavedCities(): ICityModel[] {
     const localStorageItem = JSON.parse(localStorage.getItem('city'));
     return localStorageItem == null ? [] : localStorageItem;
   }
 
-  addCity(city: CityModel) {
+  addCity(city: ICityModel) {
     this.savedCityList.push(city);
     this.setLocalStorage(this.savedCityList);
   }

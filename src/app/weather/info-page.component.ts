@@ -3,10 +3,10 @@ import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-weather',
-  templateUrl: './weather.component.html',
-  styleUrls: ['./weather.component.scss']
+  templateUrl: './info-page.component.html',
+  styleUrls: ['./info-page.component.scss']
 })
-export class WeatherComponent implements OnInit {
+export class InfoPageComponent implements OnInit {
 
   constructor() {
   }
