@@ -10,7 +10,7 @@
           <div class="date">
             {{temp.date}}
           </div>
-          <img *ngIf="forecast.which_data" class="image" [src]="'http://openweathermap.org/img/w/' + temp.icon + '.png'" alt=""
+          <img *ngIf="forecast.which_data" class="image" [src]="'https://openweathermap.org/img/w/' + temp.icon + '.png'" alt=""
                width="40px">
           <div *ngIf="forecast.which_data">
             {{temp.temp.toFixed(1)}}&deg;
