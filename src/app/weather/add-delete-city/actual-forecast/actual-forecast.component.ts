@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ICityModel} from '../../../model/cityList';
 import {OpenweatherService} from '../../../service/openweather.service';
 import {Subscription} from 'rxjs';
-import {IActualForecast} from '../../../model/openWeatherMap';
+import {Coords, IActualForecast} from '../../../model/openWeatherMap';
 import {MessageService} from 'primeng/api';
 
 @Component({
@@ -14,6 +14,7 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
 
   @Input() cityListArray: ICityModel[];
   @Input() apiKey: string;
+  @Input() coords: Coords;
   weatherInfo: IActualForecast[];
   cityId = [];
   openWeatherSub: Subscription;
@@ -28,19 +29,22 @@ export class ActualForecastComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.cityListArray.forEach(value => {
-      this.cityId.push(value.id);
-    });
-    this.getWeatherInfo();
+      if (this.cityListArray.length > 0) {
+        this.cityListArray.forEach(value => {
+          this.cityId.push(value.id);
+        });
+        this.getWeatherInfo();
+      }
   }
 
   // Getting weather from service through http and displaying possible warnings
   getWeatherInfo() {
     this.openWeatherSub = this.openWeatherService.getActualWeatherInfo(this.cityId, this.apiKey).subscribe(value => {
-      value.list.forEach(data => {
-        data.main.temp = ActualForecastComponent.roundTemp(data.main.temp);
-      });
-      this.weatherInfo = value.list;
+        value.list.forEach(data => {
+          data.main.temp = ActualForecastComponent.roundTemp(data.main.temp);
+        });
+        this.weatherInfo = value.list;
+
     }, error1 => {
       if (error1.statusText === 'Unauthorized') {
         this.toast(

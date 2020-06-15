@@ -3,7 +3,7 @@ import {OpenweatherService} from '../../../service/openweather.service';
 import {ICityModel} from '../../../model/cityList';
 import {MessageService} from 'primeng/api';
 import {Subscription} from 'rxjs';
-import {IFiveDayForecast} from '../../../model/openWeatherMap';
+import {Coords, IFiveDayForecast} from '../../../model/openWeatherMap';
 import * as moment from 'moment';
 import {IAllCityForecast, IAverageTemperature, IGroupedFiveDayForecast} from '../../../model/fiveDayForecast';
 
@@ -16,6 +16,7 @@ export class FiveDayForecastComponent implements OnInit, OnDestroy {
 
   @Input() cityListArray: ICityModel[];
   @Input() apiKey: string;
+  @Input() coords: Coords;
   fiveDayWeatherInfo: IFiveDayForecast[];
   sortedDates: IGroupedFiveDayForecast[];
   openWeatherSub: Subscription;

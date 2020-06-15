@@ -3,7 +3,7 @@
     <div class="left-panel panel">
       <div class="ui-g city">
         <div class="ui-g-8 city-name">{{forecast.city_name}}</div>
-        <p-inputSwitch [(ngModel)]="forecast.which_data"></p-inputSwitch>
+        <p-inputSwitch [(ngModel)]="forecast.which_data" [pTooltip]="(forecast.which_data? 'Wind Info' : 'Temperature Info')" tooltipPosition="right"></p-inputSwitch>
       </div>
       <div class="ui-g">
         <div class="temp" *ngFor="let temp of forecast.results">
