@@ -4,6 +4,8 @@ import {ICityModel} from '../../model/cityList';
 import {CityListService} from '../../service/city-list.service';
 import {MessageService} from 'primeng/api';
 import {ApiKeyService} from '../../service/api-key.service';
+import {Coords} from "../../model/openWeatherMap";
+import {OpenweatherService} from "../../service/openweather.service";
 
 @Component({
   selector: 'app-add-delete-city',
@@ -13,6 +15,7 @@ import {ApiKeyService} from '../../service/api-key.service';
 export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   citylistSub: Subscription;
+  currentLocationSub: Subscription;
   addedCityListArray: ICityModel[];
   cityListArray: string[];
   showActualWeather = false;
@@ -26,15 +29,20 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   disabledButtonShowWeather = true;
   hideButtonRemove = false;
   apiKey: string;
+  lat: number;
+  lng: number;
+  zoom: number;
+  coordinates: Coords;
 
   constructor(private cityService: CityListService,
               private messageService: MessageService,
-              private apiKeyService: ApiKeyService) {
+              private apiKeyService: ApiKeyService,
+              private openWeatherService: OpenweatherService) {
   }
 
   ngOnInit() {
-    this.showActualWeatherButtonLabel = 'Pokaż aktualną pogodę';
-    this.showFiveDayWeatherButtonLabel = 'Pokaż aktualną prognozę';
+    this.showActualWeatherButtonLabel = 'Show actual weather';
+    this.showFiveDayWeatherButtonLabel = 'Show actual forecast';
 
     // Checking if api key is valid and disabling button if not
     this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => {
@@ -55,11 +63,11 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   search(event) {
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showActualWeatherButtonLabel = 'Zaktualizuj pogodę';
+      this.showActualWeatherButtonLabel = 'Update weather';
     }
     if (this.showFiveDayWeather) {
       this.showFiveDayWeather = false;
-      this.showFiveDayWeatherButtonLabel = 'Zaktualizuj prognozę';
+      this.showFiveDayWeatherButtonLabel = 'Update forecast';
     }
     const queryy = event.query;
     this.citylistSub = this.cityService.getlistOfCities().subscribe(data => {
@@ -85,15 +93,15 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     if (this.addedCityListArray.length) {
       this.showActualWeather = !this.showActualWeather;
       if (!this.showActualWeather) {
-        this.showActualWeatherButtonLabel = 'Pokaż aktualną pogodę';
+        this.showActualWeatherButtonLabel = 'Show actual weather';
       } else {
-        this.showActualWeatherButtonLabel = 'Zamknij pogodę';
+        this.showActualWeatherButtonLabel = 'Close weather';
       }
     } else {
       this.toast(
         'warn',
-        'Nie zostały wybrane żadne miasta.',
-        'Zacznij wpisywać swoje miasto i kliknij na nie.'
+        'You don`t choose any city.',
+        'Start typing city name.'
       );
     }
   }
@@ -102,15 +110,15 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     if (this.addedCityListArray.length) {
       this.showFiveDayWeather = !this.showFiveDayWeather;
       if (!this.showFiveDayWeather) {
-        this.showFiveDayWeatherButtonLabel = 'Pokaż aktualną prognozę';
+        this.showFiveDayWeatherButtonLabel = 'Show actual forecast';
       } else {
-        this.showFiveDayWeatherButtonLabel = 'Zamknij prognozę';
+        this.showFiveDayWeatherButtonLabel = 'Close forecast';
       }
     } else {
       this.toast(
         'warn',
-        'Nie zostały wybrane żadne miasta.',
-        'Zacznij wpisywać swoje miasto i kliknij na nie.'
+        'You don`t choose any city.',
+        'Start typing city name.'
       );
     }
   }
@@ -125,7 +133,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     } else {
       this.toast(
         'warn',
-        'Błąd dodawania miasta'
+        'Error adding city'
       );
     }
   }
@@ -134,11 +142,11 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   removeCity() {
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showActualWeatherButtonLabel = 'Zaktualizuj pogodę';
+      this.showActualWeatherButtonLabel = 'Update weather';
     }
     if (this.showFiveDayWeather) {
       this.showFiveDayWeather = false;
-      this.showFiveDayWeatherButtonLabel = 'Zaktualizuj prognozę';
+      this.showFiveDayWeatherButtonLabel = 'Update forecast';
     }
     this.addedCityListArray.splice(this.removeId, 1);
     this.cityService.removeCity(this.removeIdFromLocalStorage);
@@ -187,10 +195,42 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     this.messageService.clear('confirm');
   }
 
+  getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.zoom = 16;
+        this.coordinates = {latitude: this.lat.toString(), longitude: this.lng.toString()};
+        this.currentLocationSub = this.openWeatherService.getCurrentLocationWeatherInfo(this.coordinates, this.apiKey).subscribe(value => {
+          if (this.addedCityListArray.length === 0 || !this.addedCityListArray.some(id => id.id === value.id)) {
+            this.addedCityListArray.push({
+              id: value.id,
+              name: value.name,
+              country: value.sys.country,
+              coord: {
+                lon: this.lng,
+                lat: this.lat
+              }
+            });
+            this.showActualWeather = true;
+            this.showActualWeatherButtonLabel = 'Close weather';
+          } else {
+            this.toast(
+              'info',
+              'You already got your current location'
+            );
+          }
+        });
+      });
+    }
+  }
+
   ngOnDestroy() {
     this.getApiKeySub.unsubscribe();
     if (this.citylistSub) {
       this.citylistSub.unsubscribe();
+      this.currentLocationSub.unsubscribe();
     }
   }
 }

@@ -9,10 +9,10 @@
     </div>
     <div class="ui-g ui-fluid">
       <div class="ui-g-6">
-        <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć te miasta?'"
-                (click)="onConfirm('cities')" label="TAK" class="ui-button-success"></button>
-        <button type="button" pButton *ngIf="message.summary === 'Na pewno chcesz usunąć to miasto?'"
-                (click)="onConfirm('city')" label="TAK" class="ui-button-success"></button>
+        <button type="button" pButton *ngIf="message.summary === 'Are you sure you want to delete this cities?'"
+                (click)="onConfirm('cities')" label="YES" class="ui-button-success"></button>
+        <button type="button" pButton *ngIf="message.summary === 'Are you sure you want to delete this city?'"
+                (click)="onConfirm('city')" label="YES" class="ui-button-success"></button>
       </div>
       <div class="ui-g-6">
         <button type="button" pButton (click)="onReject()" label="NIE" class="ui-button-secondary"></button>
@@ -26,35 +26,37 @@
   <div class="container">
     <p-autoComplete (completeMethod)="search($event)" [(ngModel)]="favouriteCityList" [delay]="500"
                     [suggestions]="cityListArray" field="name" [autoHighlight]="true" [minLength]="2"
-                    placeholder="Szukaj miasta" (keydown.enter)="addCity()"></p-autoComplete>
-    <button pButton type="button" label="Dodaj" icon="pi pi-plus" (click)="addCity()"
+                    placeholder="Search..." (keydown.enter)="addCity()"></p-autoComplete>
+    <button pButton type="button" label="Add" icon="pi pi-plus" (click)="addCity()"
+            class="ui-button-success button"></button>
+    <button pButton type="button" label="My location" icon="pi pi-plus" (click)="getUserLocation()"
             class="ui-button-success button"></button>
     <button pButton type="button" [label]="showActualWeatherButtonLabel" icon="pi pi-cloud"
             (click)="showActualWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
     <button pButton type="button" [label]="showFiveDayWeatherButtonLabel" icon="pi pi-cloud"
             (click)="showFiveDayWeatherForecast()" class="button" [disabled]="disabledButtonShowWeather"></button>
     <div class="delete-button" *ngIf="hideButtonRemove">
-      <button pButton type="button" label="Usuń wszystkie miasta" icon="pi pi-minus" class="ui-button-danger"
-              (click)="showConfirm('Na pewno chcesz usunąć te miasta?')"></button>
+      <button pButton type="button" label="Delete all" icon="pi pi-minus" class="ui-button-danger"
+              (click)="showConfirm('Are you sure you want to delete this cities?')"></button>
     </div>
     <div class="ui-g city-list" *ngFor="let city of addedCityListArray">
       <div class="ui-g-2 city-name">
         <p>{{city.name}}</p>
       </div>
       <div class="ui-g-2 city-button">
-        <button pButton type="button" label="Usuń" icon="pi pi-minus" class="ui-button-danger"
-                (click)="showConfirm('Na pewno chcesz usunąć to miasto?', addedCityListArray.indexOf(city), city.id)"></button>
+        <button pButton type="button" label="Delete" icon="pi pi-minus" class="ui-button-danger"
+                (click)="showConfirm('Are you sure you want to delete this city?', addedCityListArray.indexOf(city), city.id)"></button>
       </div>
     </div>
   </div>
   <div class="ui-g-4 ui-g-nopad">
     <div class="ui-g-12">
       <app-actual-forecast *ngIf="showActualWeather" [cityListArray]="addedCityListArray"
-                           [apiKey]="apiKey"></app-actual-forecast>
+                           [apiKey]="apiKey" [coords]="coordinates"></app-actual-forecast>
     </div>
     <div class="ui-g-12">
       <app-five-day-forecast *ngIf="showFiveDayWeather" [cityListArray]="addedCityListArray"
-                             [apiKey]="apiKey"></app-five-day-forecast>
+                             [apiKey]="apiKey" [coords]="coordinates"></app-five-day-forecast>
     </div>
   </div>
 </div>

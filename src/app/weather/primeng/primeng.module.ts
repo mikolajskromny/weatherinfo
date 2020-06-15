@@ -4,6 +4,7 @@ import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {ToastModule} from 'primeng/toast';
+import {TooltipModule} from 'primeng/tooltip';
 
 @NgModule({
   declarations: [],
@@ -14,7 +15,8 @@ import {ToastModule} from 'primeng/toast';
     TabMenuModule,
     AutoCompleteModule,
     ToastModule,
-    InputSwitchModule
+    InputSwitchModule,
+    TooltipModule
   ],
   exports: [
     ButtonModule,
@@ -23,7 +25,8 @@ import {ToastModule} from 'primeng/toast';
     TabMenuModule,
     AutoCompleteModule,
     ToastModule,
-    InputSwitchModule
+    InputSwitchModule,
+    TooltipModule
   ]
 })
 export class PrimengModule {
