@@ -1,7 +1,7 @@
 <div class="widget" *ngFor="let cityData of weatherInfo">
   <div class="left-panel panel" >
     <div class="ui-g city">
-      <img class="ui-g-4 image" [src]="'http://openweathermap.org/img/w/' + cityData.weather[0].icon + '.png'" alt="" width="50px">
+      <img class="ui-g-4 image" [src]="'https://openweathermap.org/img/w/' + cityData.weather[0].icon + '.png'" alt="" width="50px">
       <div class="ui-g-8 city-name">{{cityData.name}}</div>
     </div>
     <div class="temp">
