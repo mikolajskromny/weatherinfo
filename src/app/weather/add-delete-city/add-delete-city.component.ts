@@ -6,6 +6,7 @@ import {MessageService} from 'primeng/api';
 import {ApiKeyService} from '../../service/api-key.service';
 import {Coords} from "../../model/openWeatherMap";
 import {OpenweatherService} from "../../service/openweather.service";
+import {WeatherButtonLabel} from "../../model/label";
 
 @Component({
   selector: 'app-add-delete-city',
@@ -41,8 +42,8 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.showActualWeatherButtonLabel = 'Show actual weather';
-    this.showFiveDayWeatherButtonLabel = 'Show actual forecast';
+    this.showActualWeatherButtonLabel = WeatherButtonLabel.showActualWeather;
+    this.showFiveDayWeatherButtonLabel = WeatherButtonLabel.showActualForecast;
 
     // Checking if api key is valid and disabling button if not
     this.getApiKeySub = this.apiKeyService.getApiKey().subscribe(value => {
@@ -63,11 +64,11 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
   search(event) {
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showActualWeatherButtonLabel = 'Update weather';
+      this.showActualWeatherButtonLabel = WeatherButtonLabel.updateWeather;
     }
     if (this.showFiveDayWeather) {
       this.showFiveDayWeather = false;
-      this.showFiveDayWeatherButtonLabel = 'Update forecast';
+      this.showFiveDayWeatherButtonLabel = WeatherButtonLabel.updateForecast;
     }
     const queryy = event.query;
     this.citylistSub = this.cityService.getlistOfCities().subscribe(data => {
@@ -93,9 +94,9 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     if (this.addedCityListArray.length) {
       this.showActualWeather = !this.showActualWeather;
       if (!this.showActualWeather) {
-        this.showActualWeatherButtonLabel = 'Show actual weather';
+        this.showActualWeatherButtonLabel = WeatherButtonLabel.showActualWeather;
       } else {
-        this.showActualWeatherButtonLabel = 'Close weather';
+        this.showActualWeatherButtonLabel = WeatherButtonLabel.closeWeather;
       }
     } else {
       this.toast(
@@ -110,9 +111,9 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
     if (this.addedCityListArray.length) {
       this.showFiveDayWeather = !this.showFiveDayWeather;
       if (!this.showFiveDayWeather) {
-        this.showFiveDayWeatherButtonLabel = 'Show actual forecast';
+        this.showFiveDayWeatherButtonLabel = WeatherButtonLabel.showActualForecast;
       } else {
-        this.showFiveDayWeatherButtonLabel = 'Close forecast';
+        this.showFiveDayWeatherButtonLabel = WeatherButtonLabel.closeForecast;
       }
     } else {
       this.toast(
@@ -140,16 +141,16 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   // Removing city from the list and local storage
   removeCity() {
+    this.addedCityListArray.splice(this.removeId, 1);
+    this.cityService.removeCity(this.removeIdFromLocalStorage);
     if (this.showActualWeather) {
       this.showActualWeather = false;
-      this.showActualWeatherButtonLabel = 'Update weather';
+      this.showActualWeatherButtonLabel = (this.addedCityListArray.length > 0 ? WeatherButtonLabel.updateWeather : WeatherButtonLabel.showActualWeather);
     }
     if (this.showFiveDayWeather) {
       this.showFiveDayWeather = false;
-      this.showFiveDayWeatherButtonLabel = 'Update forecast';
+      this.showFiveDayWeatherButtonLabel = (this.addedCityListArray.length > 0 ? WeatherButtonLabel.updateForecast : WeatherButtonLabel.showActualForecast);
     }
-    this.addedCityListArray.splice(this.removeId, 1);
-    this.cityService.removeCity(this.removeIdFromLocalStorage);
   }
 
   // Universal function for toast messages
@@ -164,6 +165,14 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
 
   // Removing all cities from the list and local storage
   removeAllCities() {
+    if (this.showActualWeather) {
+      this.showActualWeather = false;
+      this.showActualWeatherButtonLabel = WeatherButtonLabel.showActualWeather;
+    }
+    if (this.showFiveDayWeather) {
+      this.showFiveDayWeather = false;
+      this.showFiveDayWeatherButtonLabel = WeatherButtonLabel.showActualForecast;
+    }
     this.cityService.removeAllCities();
     this.addedCityListArray = [];
   }
@@ -204,7 +213,7 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
         this.coordinates = {latitude: this.lat.toString(), longitude: this.lng.toString()};
         this.currentLocationSub = this.openWeatherService.getCurrentLocationWeatherInfo(this.coordinates, this.apiKey).subscribe(value => {
           if (this.addedCityListArray.length === 0 || !this.addedCityListArray.some(id => id.id === value.id)) {
-            this.addedCityListArray.push({
+            const currentCity = {
               id: value.id,
               name: value.name,
               country: value.sys.country,
@@ -212,7 +221,9 @@ export class AddDeleteCityComponent implements OnInit, OnDestroy {
                 lon: this.lng,
                 lat: this.lat
               }
-            });
+            };
+            this.addedCityListArray.push(currentCity);
+            this.cityService.addCity(currentCity);
             this.showActualWeather = true;
             this.showActualWeatherButtonLabel = 'Close weather';
           } else {
