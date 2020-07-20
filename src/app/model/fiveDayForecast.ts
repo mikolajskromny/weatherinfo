@@ -33,14 +33,14 @@ export interface IFiveDayForecast {
 }
 
 export interface IAllCityForecast {
-  results: Array<IAverageTemperature>;
+  results: Array<IAverageWeather>;
   city_name: string;
   which_data: boolean;
 }
 
-export interface IAverageTemperature {
+export interface IAverageWeather {
   date: string;
   temp: number;
   icon: string;
-  wind_speed: number;
+  humidity: number;
 }

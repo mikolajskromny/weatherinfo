@@ -3,20 +3,20 @@
     <div class="left-panel panel">
       <div class="ui-g city">
         <div class="ui-g-8 city-name">{{forecast.city_name}}</div>
-        <p-inputSwitch [(ngModel)]="forecast.which_data" [pTooltip]="(forecast.which_data? 'Wind Info' : 'Temperature Info')" tooltipPosition="right"></p-inputSwitch>
+        <p-inputSwitch [(ngModel)]="forecast.which_data" [pTooltip]="(forecast.which_data? 'Humidity Info' : 'Temperature Info')" tooltipPosition="right"></p-inputSwitch>
       </div>
       <div class="ui-g">
         <div class="temp" *ngFor="let temp of forecast.results">
           <div class="date">
             {{temp.date}}
           </div>
-          <img *ngIf="forecast.which_data" class="image" [src]="'https://openweathermap.org/img/w/' + temp.icon + '.png'" alt=""
+          <img *ngIf="forecast.which_data" class="image" [src]="'https://openweathermap.org/img/w/' + temp.icon + '.png'" alt="icon"
                width="40px">
           <div *ngIf="forecast.which_data">
-            {{temp.temp.toFixed(1)}}&deg;
+            {{temp.temp.toFixed(1)}}&deg;C
           </div>
           <div *ngIf="!forecast.which_data">
-            {{temp.wind_speed.toFixed(1)}} <p style="font-size: 8px">km/h</p>
+            {{temp.humidity.toFixed(1) + ' %'}}
           </div>
         </div>
       </div>
