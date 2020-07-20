@@ -5,7 +5,7 @@ import {MessageService} from 'primeng/api';
 import {Subscription} from 'rxjs';
 import {Coords, IFiveDayForecast} from '../../../model/openWeatherMap';
 import * as moment from 'moment';
-import {IAllCityForecast, IAverageTemperature, IGroupedFiveDayForecast} from '../../../model/fiveDayForecast';
+import {IAllCityForecast, IAverageWeather, IGroupedFiveDayForecast} from '../../../model/fiveDayForecast';
 
 @Component({
   selector: 'app-five-day-forecast',
@@ -21,8 +21,8 @@ export class FiveDayForecastComponent implements OnInit, OnDestroy {
   sortedDates: IGroupedFiveDayForecast[];
   openWeatherSub: Subscription;
   groupByKey: any;
-  averageTempArray: IAverageTemperature[] = [];
-  averageTemp: IAverageTemperature;
+  averageTempArray: IAverageWeather[] = [];
+  averageTemp: IAverageWeather;
   fiveDayForecastArray: IAllCityForecast[] = [];
   whichData = true;
 
@@ -33,7 +33,7 @@ export class FiveDayForecastComponent implements OnInit, OnDestroy {
       date: '',
       temp: 0,
       icon: '',
-      wind_speed: null
+      humidity: null
     };
   }
 
@@ -97,15 +97,15 @@ export class FiveDayForecastComponent implements OnInit, OnDestroy {
     this.sortedDates.forEach(value => {
       value.forEach(value2 => {
         this.averageTemp.icon = value2.weather[0].icon;
-        this.averageTemp.wind_speed = value2.wind.speed;
         this.averageTemp.date = value2.dt_txt;
         this.averageTemp.temp += value2.main.temp;
+        this.averageTemp.humidity = value2.main.humidity
       });
       this.averageTempArray.push({
         date: this.averageTemp.date,
         temp: FiveDayForecastComponent.roundTemp(this.averageTemp.temp / value.length),
         icon: this.averageTemp.icon,
-        wind_speed: this.averageTemp.wind_speed,
+        humidity: this.averageTemp.humidity
       });
       this.averageTemp.temp = 0;                      // after each loop of data in one day, variable has to be reset
     });
